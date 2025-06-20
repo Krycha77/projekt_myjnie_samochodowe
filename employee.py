@@ -1,11 +1,11 @@
 from tkinter import *
-from utils import is_integer, city_not_found_message
+from tkinter.ttk import Combobox
 
+from utils import is_integer, city_not_found_message, are_params_filled
+from data import employees, get_carwashes
 import tkintermapview
 
 from tkinter import ttk
-
-employees: list = []
 
 
 class Employee:
@@ -17,7 +17,7 @@ class Employee:
         self.city = city
         self.coordinates = self.get_coordinates()
         self.marker = widget.set_marker(self.coordinates[0], self.coordinates[1],
-                                            text=f'{self.first_name} {self.last_name}, {self.age}, {self.carwash_name}, {self.city}')
+                                            text=f'{self.first_name} {self.last_name}, {self.age}')
 
     # FUNKCJA WEWNĄTRZ KLASY TO METODA
     def get_coordinates(self) -> list:
@@ -42,13 +42,15 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
         first_name = entry_pracownika_imie.get()
         last_name = entry_pracownika_nazwisko.get()
         age = entry_pracownika_wiek.get()
-        employee_name = entry_pracownika_nazwa_myjni.get()
+        carwash_name = entry_pracownika_nazwa_myjni.get()
         city = entry_pracownika_miasto.get()
+        if not are_params_filled(first_name, last_name, age, carwash_name, city):
+            return
 
         if not is_integer(age):
             return
 
-        employee = Employee(first_name=first_name, last_name=last_name, age=age, carwash_name=employee_name, city=city, widget=map_widget_pracownika)
+        employee = Employee(first_name=first_name, last_name=last_name, age=age, carwash_name=carwash_name, city=city, widget=map_widget_pracownika)
         employees.append(employee)
 
        
@@ -97,6 +99,9 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
         carwash_name = entry_pracownika_nazwa_myjni.get()
         city = entry_pracownika_miasto.get()
 
+        if not are_params_filled(first_name,last_name,age,carwash_name,city):
+            return
+
         if not is_integer(age):
             return
 
@@ -110,7 +115,7 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
         employees[i].coordinates = employees[i].get_coordinates()
         employees[i].marker.delete()
         employees[i].marker = map_widget_pracownika.set_marker(employees[i].coordinates[0], employees[i].coordinates[1],
-                                                           text=f'{employees[i].first_name} {employees[i].last_name} {employees[i].age} {employees[i].carwash_name} {employees[i].city}')
+                                                           text=f'{employees[i].first_name} {employees[i].last_name} {employees[i].age}')
 
         show_employees()
         button_dodaj_pracownika.config(text='Dodaj', command=add_employee)
@@ -136,6 +141,8 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
         map_widget_pracownika.set_position(employees[i].coordinates[0], employees[i].coordinates[1])
 
 
+    def refresh_carwash_list():
+        entry_pracownika_nazwa_myjni['values']=get_carwashes()
 
     ramka_lista_pracownikow = Frame(tab2)
     ramka_formularz_pracownikow = Frame(tab2)
@@ -225,12 +232,13 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
     entry_pracownika_wiek.grid(row=3, column=1)
     entry_pracownika_miasto = Entry(ramka_formularz_pracownikow)
     entry_pracownika_miasto.grid(row=4, column=1)
-    entry_pracownika_nazwa_myjni = Entry(ramka_formularz_pracownikow)
+    entry_pracownika_nazwa_myjni = Combobox(ramka_formularz_pracownikow, postcommand=refresh_carwash_list)
     entry_pracownika_nazwa_myjni.grid(row=5, column=1)
 
-    map_widget_pracownika = tkintermapview.TkinterMapView(ramka_mapa_pracownicy, width=1200, height=400, corner_radius=0)
+    map_widget_pracownika = tkintermapview.TkinterMapView(ramka_mapa_pracownicy, width=1400, height=600, corner_radius=0)
     map_widget_pracownika.grid(row=0, column=0, columnspan=2)
     map_widget_pracownika.set_position(52.23, 21.00)
     map_widget_pracownika.set_zoom(6)
 
+    refresh_carwash_list()
 
