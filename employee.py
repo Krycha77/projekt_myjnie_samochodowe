@@ -1,11 +1,11 @@
 from tkinter import *
-from utils import is_integer, city_not_found_message
+from tkinter.ttk import Combobox
 
+from utils import is_integer, city_not_found_message
+from data import employees, get_carwashes
 import tkintermapview
 
 from tkinter import ttk
-
-employees: list = []
 
 
 class Employee:
@@ -136,6 +136,8 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
         map_widget_pracownika.set_position(employees[i].coordinates[0], employees[i].coordinates[1])
 
 
+    def refresh_carwash_list():
+        entry_pracownika_nazwa_myjni['values']=get_carwashes()
 
     ramka_lista_pracownikow = Frame(tab2)
     ramka_formularz_pracownikow = Frame(tab2)
@@ -225,7 +227,7 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
     entry_pracownika_wiek.grid(row=3, column=1)
     entry_pracownika_miasto = Entry(ramka_formularz_pracownikow)
     entry_pracownika_miasto.grid(row=4, column=1)
-    entry_pracownika_nazwa_myjni = Entry(ramka_formularz_pracownikow)
+    entry_pracownika_nazwa_myjni = Combobox(ramka_formularz_pracownikow, postcommand=refresh_carwash_list)
     entry_pracownika_nazwa_myjni.grid(row=5, column=1)
 
     map_widget_pracownika = tkintermapview.TkinterMapView(ramka_mapa_pracownicy, width=1200, height=400, corner_radius=0)
@@ -233,4 +235,5 @@ def configure_employee_gui(tab2: ttk.Frame) -> None:
     map_widget_pracownika.set_position(52.23, 21.00)
     map_widget_pracownika.set_zoom(6)
 
+    refresh_carwash_list()
 

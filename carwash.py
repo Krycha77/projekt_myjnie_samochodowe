@@ -1,11 +1,10 @@
 from tkinter import *
 from utils import city_not_found_message
+from data import carwashes
 
 import tkintermapview
 
 from tkinter import ttk
-
-carwashes: list = []
 
 
 class Carwash:
