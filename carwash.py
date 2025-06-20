@@ -1,4 +1,5 @@
 from tkinter import *
+from utils import city_not_found_message
 
 import tkintermapview
 
@@ -23,6 +24,10 @@ class Carwash:
         adres_url: str = f'https://pl.wikipedia.org/wiki/{self.location}'
         response_html = BeautifulSoup(requests.get(adres_url).text, 'html.parser')
 
+        if len(response_html.select('.latitude'))<2:
+            city_not_found_message()
+            return
+
         return [
             float(response_html.select('.latitude')[1].text.replace(',', '.')),
             float(response_html.select('.longitude')[1].text.replace(',', '.')),
@@ -30,7 +35,7 @@ class Carwash:
 
 
 
-def configure_gui(tab1: ttk.Frame) -> None:
+def configure_carwash_gui(tab1: ttk.Frame) -> None:
     def add_carwash() -> None:
         name = entry_myjnia_nazwa.get()
         owner = entry_myjnia_wlasciciel.get()
