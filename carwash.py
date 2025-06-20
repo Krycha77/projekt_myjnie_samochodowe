@@ -1,5 +1,5 @@
 from tkinter import *
-from utils import city_not_found_message
+from utils import city_not_found_message, are_params_filled
 from data import carwashes
 
 import tkintermapview
@@ -40,6 +40,9 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
         owner = entry_myjnia_wlasciciel.get()
         location = entry_myjnia_miejscowosc.get()
 
+        if not are_params_filled(name, owner, location):
+            return
+
         carwash = Carwash(name=name, owner=owner, location=location, widget=map_widget_myjnie)
         carwashes.append(carwash)
 
@@ -55,7 +58,7 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
     def show_carwashes():
         listbox_lista_myjni.delete(0, END)
         for idx, carwash in enumerate(carwashes):
-            listbox_lista_myjni.insert(idx, f'{idx + 1}. {carwash.name} {carwash.owner}')
+            listbox_lista_myjni.insert(idx, f'{idx + 1}. {carwash.name} {carwash.owner} {carwash.location}')
 
     def remove_carwash():
         i = listbox_lista_myjni.index(ACTIVE)
@@ -80,6 +83,8 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
         name = entry_myjnia_nazwa.get()
         owner = entry_myjnia_wlasciciel.get()
         location = entry_myjnia_miejscowosc.get()
+        if not are_params_filled(name, owner, location):
+            return
 
         carwashes[i].name = name
         carwashes[i].owner = owner
@@ -147,7 +152,7 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
     label_szczegoly_myjni_wlasciciel = Label(ramka_formularz_myjni, text='Wlaściciel:')
     label_szczegoly_myjni_wlasciciel.grid(row=2, column=0, sticky=W)
 
-    label_szczegoly_myjni_miejscowosc = Label(ramka_formularz_myjni, text='Miejscowość:')
+    label_szczegoly_myjni_miejscowosc = Label(ramka_formularz_myjni, text='Miasto:')
     label_szczegoly_myjni_miejscowosc.grid(row=3, column=0, sticky=W)
 
     # Ramka_szczegoly_myjni
@@ -166,7 +171,7 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
     label_szczegoly_myjni_wlasciciel_wartosc = Label(ramka_szczegoly_myjni, text='....')
     label_szczegoly_myjni_wlasciciel_wartosc.grid(row=1, column=3)
 
-    label_szczegoly_myjni_miejscowosc = Label(ramka_szczegoly_myjni, text='Miescowość: ')
+    label_szczegoly_myjni_miejscowosc = Label(ramka_szczegoly_myjni, text='Miasto: ')
     label_szczegoly_myjni_miejscowosc.grid(row=1, column=4)
 
     label_szczegoly_myjni_miejscowosc_wartosc = Label(ramka_szczegoly_myjni, text='....')
@@ -179,7 +184,7 @@ def configure_carwash_gui(tab1: ttk.Frame) -> None:
     entry_myjnia_miejscowosc = Entry(ramka_formularz_myjni)
     entry_myjnia_miejscowosc.grid(row=3, column=1)
 
-    map_widget_myjnie = tkintermapview.TkinterMapView(ramka_mapa_myjnie, width=1200, height=400, corner_radius=0)
+    map_widget_myjnie = tkintermapview.TkinterMapView(ramka_mapa_myjnie, width=1400, height=600, corner_radius=0)
     map_widget_myjnie.grid(row=0, column=0, columnspan=2)
     map_widget_myjnie.set_position(52.23, 21.00)
     map_widget_myjnie.set_zoom(6)
